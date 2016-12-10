@@ -1,48 +1,54 @@
 
 
-
+#RUN WITH F9
 from ggplot import *
 import pandas as pd
 
 
 dir = "/home/erika/Dropbox/GIT/DENSITY GRAPH/R/input/"
+dir_output = "/home/erika/Dropbox/GIT/DENSITY GRAPH/Python/"
 
 names_head  = ['x', 'fS', 'S', 'true_densi']
 dtdata = pd.read_csv(dir + "dt.data.csv", sep=';' , #names = names_head,
                     encoding='latin-1')
 
 dtdata.head(10) 
-     
+
+
+# with ggplot of python the options are limited
 d = ggplot(dtdata, aes(x='S')) #+ geom_histogram() 
-d = d +  geom_line(aes(x = 'x', y = 'true_densi'), size = 2)  
-d = d + geom_line(aes(x = 'x', y = 'fS'), size = .2)  #+   stat_smooth(se = FALSE) 
-d = d + geom_point(aes(x = 'x', y = 'fS'), size = 1) 
-#d = d + xlim(c(2, 4))   
+d = d + geom_line(aes(x = 'x', y = 'true_densi'), size = 2)  
+d = d + geom_line(aes(x = 'x', y = 'fS'), size = .2) 
+d = d + geom_point(aes(x = 'x', y = 'fS'), size = 1)   
 d = d + xlab('S') + ylab('Density') + theme_bw() 
+d = d + geom_ribbon(aes(ymin = 'true_densi', ymax = 'fS'), fill = "pink")
+d = d + scale_x_continuous(limits=(2,4)) 
+#d = d + scale_y_continuous(limits=(0,20000))
+d = d + xlab('S') 
+d = d + ylab('Density') 
+#d = d + theme_xkcd()
+plt.style.use('ggplot')
 
-#+ theme(axis.text=element_text(size = 20),axis.title=element_text(size= 20,face="bold"),
-#                                                          legend.text = element_text(size = 20))
+                                                        
+d.save(dir_output+"density_python.png")
+#dir_output  = dir + "output/"
+#dir_figures = dir_output + "/figures/"
+#--------------------------------------------------------------------------------
+# using other packages : matplotlib
 
-
-
-
-
-print ggplot(dtdata, aes('x','fS')) + \
-    geom_line(color='coral') + \
-    scale_x_date(breaks=date_breaks('36 months'), labels='%Y') + \
-    scale_y_continuous(labels='millions')
-    
-    
-    d <- NULL
-d <- ggplot(dat, aes(y=..density..,x= S)) + geom_histogram(bins = 15, colour = "black", size = .6, fill = "white", breaks=seq(2.1, 3.5,0.1)) 
-d <- d + geom_line(aes(x = x, y = true_densi, colour = 'TRUE'), size = 2)  #+   stat_smooth(se = FALSE) 
-d <- d + geom_line(aes(x = x, y = fS, colour = 'SME'), size = .2)  #+   stat_smooth(se = FALSE) 
-d <- d + geom_point(aes(x = x, y = fS, colour = 'SME'), size = 1) 
-d <- d + xlim(c(2, 4)) 
-d <- d + scale_colour_manual("", 
-                             breaks = c("TRUE", "SME"),
-                             values = c("black", "darkgray")) 
-d <- d + xlab('S') + ylab('Density') + theme_bw() + theme(axis.text=element_text(size = 20),axis.title=element_text(size= 20,face="bold"),
-                                                          legend.text = element_text(size = 20))
-d
+# first attempt
+import matplotlib.pyplot as plt
+plt.hist(dtdata.S, bins='auto', normed=1, color = 'gray', alpha=0.5) 
+plt.plot(dtdata.x, dtdata.fS,  linewidth=3.0, color = 'pink')
+plt.plot(dtdata.x, dtdata.true_densi,  linewidth=3.0, color = 'black')
+plt.fill_between(dtdata.x, dtdata.true_densi, dtdata.fS, facecolor='green', interpolate=True)
+plt.fill_between(dtdata.x, 0, dtdata.fS, facecolor='yellow', interpolate=True, alpha =0.3)
+plt.xlabel('S', fontsize= 20)
+plt.ylabel('Probability', fontsize= 20)
+plt.title('')
+plt.axis([2, 3.6, 0, 2])
+plt.grid(True)
+plt.savefig(dir_output +"density_python_2.png", dpi=200)
+plt.show()
+plt.close()
 

@@ -1,8 +1,11 @@
 
 
 rm(list=ls())
+dir = "/home/erika/Dropbox/GIT/DENSITY GRAPH/R/"
+setwd(dir)
 source('conf/conf.R')
 load(file = paste0(dir.input, "dt.data.RData")) 
+
 
 
 d <- NULL
@@ -73,4 +76,6 @@ d <- d + xlab('S') + ylab('Density') + theme_bw() + theme(axis.text=element_text
 ggsave(d, file = paste0(dir.figures, 'density_4.', nrow(dat), '.png'),   width = 20, height = 20, units = "cm")
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
 
